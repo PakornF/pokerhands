@@ -19,12 +19,50 @@ class Game:
         self.player_names = ["",""]
         self.system = Hand()
         self.chk_card_state = False
-        
-    def run(self):
-        while self.game_active:
-            self.screen.fill(BG_COLOR)
-            pygame.display.update()
 
+    def run(self):
+        act_font = pygame.font.Font(GAME_FONT, 80)
+        while self.game_active is True:
+            self.screen.fill(BG_COLOR)
+            # Render Action Button
+            call_txt = act_font.render("Call", True, (255, 255, 255))
+            bet_txt = act_font.render("Bet", True, (255, 255, 255))
+            raise_txt = act_font.render("Raise", True, (255, 255, 255))
+            fold_txt = act_font.render("Fold", True, (255, 255, 255))
+            all_in_txt = act_font.render("All in", True, (255, 255, 255))
+
+            call_rect = call_txt.get_rect(center=(400, HEIGHT-50))
+            bet_rect = bet_txt.get_rect(center=(650, HEIGHT-50))
+            raise_rect = raise_txt.get_rect(center=(900, HEIGHT-50))
+            fold_rect = fold_txt.get_rect(center=(1150, HEIGHT-50))
+            all_in_rect = all_in_txt.get_rect(center=(1400, HEIGHT-50))
+
+            self.screen.blit(call_txt, call_rect)
+            self.screen.blit(bet_txt, bet_rect)
+            self.screen.blit(raise_txt, raise_rect)
+            self.screen.blit(fold_txt, fold_rect)
+            self.screen.blit(all_in_txt, all_in_rect)
+            # Render Pot
+            pot_txt = act_font.render(f"Pot: {self.system.pot}", True, (255, 255, 255))
+            pot_rect = pot_txt.get_rect(center=(WIDTH // 2, 100))
+            self.screen.blit(pot_txt, pot_rect)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if call_rect.collidepoint(event.pos):
+                        print(f"Call is pressed")
+                    elif bet_rect.collidepoint(event.pos):
+                        print(f"Bet is pressed")
+                    elif raise_rect.collidepoint(event.pos):
+                        print(f"Raise is pressed")
+                    elif fold_rect.collidepoint(event.pos):
+                        print(f"Fold is pressed")
+                    elif all_in_rect.collidepoint(event.pos):
+                        print(f"All in is pressed")
+            
+            pygame.display.update()
     def chk_card(self):
         while self.chk_card_state is True:
             self.screen.fill(BG_COLOR)
@@ -49,13 +87,13 @@ class Game:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
-                        if self.curr_player_index < 1:
-                            self.curr_player_index += 1
+                        if self.curr_player_index <= 1:
+                            self.curr_player_index = (self.curr_player_index + 1) % 2
                             self.chk_card()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if play_rect.collidepoint(event.pos):
-                        print("Start Playing")
                         self.chk_card_state = False
+                        print("Start Playing")
                         self.game_active = True
                         self.run()
             pygame.display.update()        
@@ -99,7 +137,6 @@ class Game:
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN: # If "Enter" is pressed
                         self.get_player_name_state = False
-                        # self.game_active = True
                         print("Game Start")
                         self.chk_card_state = True
                         self.curr_player_index = 0

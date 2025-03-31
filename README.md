@@ -10,7 +10,7 @@ Pygame and Python3 are required, as well as card images and font in graphics/
 From cmd/PowerShell:
 
 ```sh
-python main.py
+python game.py
 ```
 
 ## Resources:

@@ -1,4 +1,3 @@
-from hand import *
 from cards import *
 from settings import *
 from system import *

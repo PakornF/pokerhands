@@ -10,65 +10,88 @@ ctypes.windll.user32.SetProcessDPIAware()
 class Game:
     def __init__(self):
         pygame.init()
+        self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Set Screen Resolution
         pygame.display.set_caption(TITLE_STRING)                # Set Window resolution
         self.game_active = False
-        self.clock = pygame.time.Clock()
         self.get_player_name_state = False
         self.curr_player_index = 0
-        self.player_names = ["",""]
+        # self.player_names = ["",""]
         self.system = Hand()
         self.chk_card_state = False
+        self.preflop = False
+        self.flop = False
+        self.turn = False
 
     def run(self):
         act_font = pygame.font.Font(GAME_FONT, 80)
+        for i in range(len(self.system.player_list)):
+            if self.system.player_list[i].small_blind == True:
+                self.curr_player_index = i
         while self.game_active is True:
-            self.screen.fill(BG_COLOR)
-            # Render Action Button
-            call_txt = act_font.render("Call", True, (255, 255, 255))
-            bet_txt = act_font.render("Bet", True, (255, 255, 255))
-            raise_txt = act_font.render("Raise", True, (255, 255, 255))
-            fold_txt = act_font.render("Fold", True, (255, 255, 255))
-            all_in_txt = act_font.render("All in", True, (255, 255, 255))
+            while self.preflop is True:
+                self.screen.fill(BG_COLOR)
+                # Render Player Turn
+                turn_txt = act_font.render(f"{self.system.player_list[self.curr_player_index].name}'s Turn", True, (255, 255, 255))
+                turn_rect = turn_txt.get_rect(center=(240, HEIGHT//2))
+                self.screen.blit(turn_txt, turn_rect)
+                # Render Action Button
+                call_txt = act_font.render("Call", True, (255, 255, 255))
+                bet_txt = act_font.render("Bet", True, (255, 255, 255))
+                raise_txt = act_font.render("Raise", True, (255, 255, 255))
+                fold_txt = act_font.render("Fold", True, (255, 255, 255))
+                all_in_txt = act_font.render("All in", True, (255, 255, 255))
+                check_txt = act_font.render("Check", True, (255, 255, 255))
 
-            call_rect = call_txt.get_rect(center=(400, HEIGHT-50))
-            bet_rect = bet_txt.get_rect(center=(650, HEIGHT-50))
-            raise_rect = raise_txt.get_rect(center=(900, HEIGHT-50))
-            fold_rect = fold_txt.get_rect(center=(1150, HEIGHT-50))
-            all_in_rect = all_in_txt.get_rect(center=(1400, HEIGHT-50))
+                call_rect = call_txt.get_rect(center=(400, HEIGHT-50))
+                bet_rect = bet_txt.get_rect(center=(650, HEIGHT-50))
+                raise_rect = raise_txt.get_rect(center=(900, HEIGHT-50))
+                fold_rect = fold_txt.get_rect(center=(1150, HEIGHT-50))
+                all_in_rect = all_in_txt.get_rect(center=(1400, HEIGHT-50))
+                check_rect = check_txt.get_rect(center=(1650, HEIGHT-50))
 
-            self.screen.blit(call_txt, call_rect)
-            self.screen.blit(bet_txt, bet_rect)
-            self.screen.blit(raise_txt, raise_rect)
-            self.screen.blit(fold_txt, fold_rect)
-            self.screen.blit(all_in_txt, all_in_rect)
-            # Render Pot
-            pot_txt = act_font.render(f"Pot: {self.system.pot}", True, (255, 255, 255))
-            pot_rect = pot_txt.get_rect(center=(WIDTH // 2, 100))
-            self.screen.blit(pot_txt, pot_rect)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if call_rect.collidepoint(event.pos):
-                        print(f"Call is pressed")
-                    elif bet_rect.collidepoint(event.pos):
-                        print(f"Bet is pressed")
-                    elif raise_rect.collidepoint(event.pos):
-                        print(f"Raise is pressed")
-                    elif fold_rect.collidepoint(event.pos):
-                        print(f"Fold is pressed")
-                    elif all_in_rect.collidepoint(event.pos):
-                        print(f"All in is pressed")
-            
-            pygame.display.update()
+                self.screen.blit(call_txt, call_rect)
+                self.screen.blit(bet_txt, bet_rect)
+                self.screen.blit(raise_txt, raise_rect)
+                self.screen.blit(fold_txt, fold_rect)
+                self.screen.blit(all_in_txt, all_in_rect)
+                self.screen.blit(check_txt, check_rect)
+                # Render Community Pot
+                pot_txt = act_font.render(f"Pot: {self.system.pot}", True, (255, 255, 255))
+                pot_rect = pot_txt.get_rect(center=(WIDTH // 2, 100))
+                self.screen.blit(pot_txt, pot_rect)
+                # Render Player's Pot
+                for i in range(len(self.system.player_list)):
+                    player_pot_txt = act_font.render(f"{self.system.player_list[i].name}'s Pot: {self.system.player_list[i].chips}", True, (255, 255, 255))
+                    player_pot_rect = player_pot_txt.get_rect(center=(WIDTH*(2*i+1)//4, 100))
+                    self.screen.blit(player_pot_txt, player_pot_rect)
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if call_rect.collidepoint(event.pos):
+                            print(f"Call is pressed")
+                        elif bet_rect.collidepoint(event.pos):
+                            current_player = self.system.player_list[self.curr_player_index]
+                            self.system.bet(current_player, 100)
+                        elif raise_rect.collidepoint(event.pos):
+                            print(f"Raise is pressed")
+                        elif fold_rect.collidepoint(event.pos):
+                            print(f"Fold is pressed")
+                        elif all_in_rect.collidepoint(event.pos):
+                            print(f"All in is pressed")
+                        elif check_rect.collidepoint(event.pos):
+                            print(f"Check is pressed")
+                
+                pygame.display.update()
     def chk_card(self):
         while self.chk_card_state is True:
             self.screen.fill(BG_COLOR)
             # Render Text
             player_card_font = pygame.font.Font(GAME_FONT, 100)
-            player_card_txt = player_card_font.render(f"Player {self.curr_player_index + 1}, Remember Your Cards", True, (255, 255, 255))
+            player_card_txt = player_card_font.render(f"{self.system.player_list[self.curr_player_index].name}, Remember Your Cards", True, (255, 255, 255))
             player_card_rect = player_card_txt.get_rect(center=(WIDTH // 2, HEIGHT // 4))
             self.screen.blit(player_card_txt, player_card_rect)
             # Render Player's Card
@@ -95,6 +118,7 @@ class Game:
                         self.chk_card_state = False
                         print("Start Playing")
                         self.game_active = True
+                        self.preflop = True
                         self.run()
             pygame.display.update()        
 
@@ -115,7 +139,7 @@ class Game:
             for i, box in enumerate(input_boxes):
                 color = (255, 255, 255) if i == self.curr_player_index else (200, 200, 200)
                 pygame.draw.rect(self.screen, color, box, 2)
-                text_surface = input_font.render(self.player_names[i], True, (255, 255, 255))
+                text_surface = input_font.render(self.system.player_list[i].name, True, (255, 255, 255))
                 self.screen.blit(text_surface, (box.x + 5, box.y + 5))
             # Render Play Text
             play_font = pygame.font.Font(GAME_FONT, 75)
@@ -143,11 +167,11 @@ class Game:
                         self.system.dealer.deal_card_for_each_player()
                         self.chk_card()
                     elif event.key == pygame.K_BACKSPACE:
-                        self.player_names[self.curr_player_index] = self.player_names[self.curr_player_index][:-1]
+                        self.system.player_list[self.curr_player_index].name = self.system.player_list[self.curr_player_index].name[:-1]
                     else:
                         # Limit name length to 15 characters
-                        if len(self.player_names[self.curr_player_index]) < 15:
-                            self.player_names[self.curr_player_index] += event.unicode
+                        if len(self.system.player_list[self.curr_player_index].name) < 15:
+                            self.system.player_list[self.curr_player_index].name += event.unicode
 
             pygame.display.update()
             self.clock.tick(FPS)

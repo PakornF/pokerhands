@@ -20,16 +20,6 @@ class Dealer:
             for cs in cardsuits:
                 fresh_deck.append(Card(cv, cs))
         return fresh_deck
-######################################################################
-    # def deal_card_for_each_player(self):
-    #     for _ in range(2):
-    #         for player in self.player_list:
-    #             player.cards.append(self.deck.pop())
-    #             # Set card positions for Player 1 and Player 2
-    #             if player == self.player_list[0]:
-    #                 player.cards[-1].position = (P1_C1[0] + len(player.cards) * 80, P1_C1[1])
-    #             elif player == self.player_list[1]:
-    #                 player.cards[-1].position = (P2_C1[0] - len(player.cards) * 80, P2_C1[1])
     def deal_card_for_each_player(self):
         for i in range(2):  # Deal 2 cards to each player
             for player in self.player_list:

@@ -19,10 +19,16 @@ class Hand:
         self.pot = 0
         self.font = pygame.font.Font(GAME_FONT, 120)
 
-    def render_player_card(self):
-        for player in self.players:
-            for card in player.cards:
-                self.display_surface.blit(card.card_surf, card.position) # Draw Each Player's Card
-    def render_community_card(self):
-        for card in self.community_card:
-            self.display_surface.blit(card.card_surf, card.position) # Draw Community Card
+        self.big_small_blind()
+    
+    def big_small_blind(self):
+        self.p1.big_blind = True
+        self.p2.small_blind = True
+
+    def bet(self, player, amount):
+        if player.chips >= amount:
+            player.chips -= amount
+            player.current_bet += amount
+            self.pot += amount
+            return True
+        return False

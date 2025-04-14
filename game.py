@@ -12,79 +12,133 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))  # Set Screen Resolution
         pygame.display.set_caption(TITLE_STRING)                # Set Window resolution
+        self.act_font = pygame.font.Font(GAME_FONT, 80)    # Set Font
+
         self.game_active = False
         self.get_player_name_state = False
-        self.curr_player_index = 0
-        # self.player_names = ["",""]
-        self.system = Hand()
         self.chk_card_state = False
         self.preflop = False
         self.flop = False
         self.turn = False
+        self.final_state = False
+        self.first_p_action = False
+
+        self.curr_player_index = 0
+        self.system = Hand()
+
+    def render_call(self):
+        call_txt = self.act_font.render("Call", True, (255, 255, 255))
+        call_rect = call_txt.get_rect(center=(400, HEIGHT-50))
+        self.screen.blit(call_txt, call_rect)
+    def render_bet(self):
+        bet_txt = self.act_font.render("Bet", True, (255, 255, 255))
+        bet_rect = bet_txt.get_rect(center=(650, HEIGHT-50))
+        self.screen.blit(bet_txt, bet_rect)
+    def render_raise(self):
+        raise_txt = self.act_font.render("Raise", True, (255, 255, 255))
+        raise_rect = raise_txt.get_rect(center=(900, HEIGHT-50))
+        self.screen.blit(raise_txt, raise_rect)
+    def render_fold(self):
+        fold_txt = self.act_font.render("Fold", True, (255, 255, 255))
+        fold_rect = fold_txt.get_rect(center=(1150, HEIGHT-50))
+        self.screen.blit(fold_txt, fold_rect)
+    def render_allin(self):
+        all_in_txt = self.act_font.render("All in", True, (255, 255, 255))
+        all_in_rect = all_in_txt.get_rect(center=(1400, HEIGHT-50))
+        self.screen.blit(all_in_txt, all_in_rect)
+    def render_check(self):
+        check_txt = self.act_font.render("Check", True, (255, 255, 255))
+        check_rect = check_txt.get_rect(center=(1650, HEIGHT-50))
+        self.screen.blit(check_txt, check_rect)
+    def render_p_turn(self):
+        turn_txt = self.act_font.render(f"{self.system.player_list[self.curr_player_index].name}'s Turn", True, (255, 255, 255))
+        turn_rect = turn_txt.get_rect(center=(240, HEIGHT//2))
+        self.screen.blit(turn_txt, turn_rect)
+    def render_overall_pot(self):
+        pot_txt = self.act_font.render(f"Overall Pot: {self.system.overall_pot}", True, (255, 255, 255))
+        pot_rect = pot_txt.get_rect(center=(WIDTH // 2, 100))
+        self.screen.blit(pot_txt, pot_rect)
+    def render_each_round_pot(self):
+        each_pot_txt = self.act_font.render(f"Pot: {self.system.overall_pot}", True, (255, 255, 255))
+        each_pot_rect = each_pot_txt.get_rect(center=(WIDTH // 2, 200))
+        self.screen.blit(each_pot_txt, each_pot_rect)
+    def render_p_chips(self):
+        for i in range(len(self.system.player_list)):
+            player_pot_txt = self.act_font.render(f"{self.system.player_list[i].name}'s Pot: {self.system.player_list[i].chips}", True, (255, 255, 255))
+            player_pot_rect = player_pot_txt.get_rect(center=(WIDTH*(2*i+1)//4, 100))
+            self.screen.blit(player_pot_txt, player_pot_rect)
 
     def run(self):
-        act_font = pygame.font.Font(GAME_FONT, 80)
+        # Track SB
         for i in range(len(self.system.player_list)):
             if self.system.player_list[i].small_blind == True:
                 self.curr_player_index = i
+        # Start
         while self.game_active is True:
             while self.preflop is True:
-                self.screen.fill(BG_COLOR)
-                # Render Player Turn
-                turn_txt = act_font.render(f"{self.system.player_list[self.curr_player_index].name}'s Turn", True, (255, 255, 255))
-                turn_rect = turn_txt.get_rect(center=(240, HEIGHT//2))
-                self.screen.blit(turn_txt, turn_rect)
-                # Render Action Button
-                call_txt = act_font.render("Call", True, (255, 255, 255))
-                bet_txt = act_font.render("Bet", True, (255, 255, 255))
-                raise_txt = act_font.render("Raise", True, (255, 255, 255))
-                fold_txt = act_font.render("Fold", True, (255, 255, 255))
-                all_in_txt = act_font.render("All in", True, (255, 255, 255))
-                check_txt = act_font.render("Check", True, (255, 255, 255))
+                while self.first_p_action is True:
+                    self.screen.fill(BG_COLOR)
+                    # Render Player Turn
+                    self.render_p_turn()
+                    # Render Community Pot
+                    self.render_overall_pot()
+                    self.render_each_round_pot()
+                    # Render Player's Pot
+                    self.render_p_chips()
 
-                call_rect = call_txt.get_rect(center=(400, HEIGHT-50))
-                bet_rect = bet_txt.get_rect(center=(650, HEIGHT-50))
-                raise_rect = raise_txt.get_rect(center=(900, HEIGHT-50))
-                fold_rect = fold_txt.get_rect(center=(1150, HEIGHT-50))
-                all_in_rect = all_in_txt.get_rect(center=(1400, HEIGHT-50))
-                check_rect = check_txt.get_rect(center=(1650, HEIGHT-50))
+                    # Render Action Button
+                    post_bet_txt = self.act_font.render("Post Bet(SB)", True, (255, 255, 255))
+                    post_bet_rect = post_bet_txt.get_rect(center=(650, HEIGHT - 50))
+                    self.screen.blit(post_bet_txt, post_bet_rect)
 
-                self.screen.blit(call_txt, call_rect)
-                self.screen.blit(bet_txt, bet_rect)
-                self.screen.blit(raise_txt, raise_rect)
-                self.screen.blit(fold_txt, fold_rect)
-                self.screen.blit(all_in_txt, all_in_rect)
-                self.screen.blit(check_txt, check_rect)
-                # Render Community Pot
-                pot_txt = act_font.render(f"Pot: {self.system.pot}", True, (255, 255, 255))
-                pot_rect = pot_txt.get_rect(center=(WIDTH // 2, 100))
-                self.screen.blit(pot_txt, pot_rect)
-                # Render Player's Pot
-                for i in range(len(self.system.player_list)):
-                    player_pot_txt = act_font.render(f"{self.system.player_list[i].name}'s Pot: {self.system.player_list[i].chips}", True, (255, 255, 255))
-                    player_pot_rect = player_pot_txt.get_rect(center=(WIDTH*(2*i+1)//4, 100))
-                    self.screen.blit(player_pot_txt, player_pot_rect)
+                    # Chk event
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
 
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if call_rect.collidepoint(event.pos):
-                            print(f"Call is pressed")
-                        elif bet_rect.collidepoint(event.pos):
-                            current_player = self.system.player_list[self.curr_player_index]
-                            self.system.bet(current_player, 100)
-                        elif raise_rect.collidepoint(event.pos):
-                            print(f"Raise is pressed")
-                        elif fold_rect.collidepoint(event.pos):
-                            print(f"Fold is pressed")
-                        elif all_in_rect.collidepoint(event.pos):
-                            print(f"All in is pressed")
-                        elif check_rect.collidepoint(event.pos):
-                            print(f"Check is pressed")
-                
-                pygame.display.update()
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_RETURN:
+                                self.curr_player_index = (self.curr_player_index + 1) % 2
+                                self.first_p_action = False
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if post_bet_rect.collidepoint(event.pos):
+                                print("Post Bet(SB) is pressed")
+                                self.system.bet(self.system.player_list[self.curr_player_index], 100)
+                    pygame.display.update()
+
+                while self.first_p_action is False:
+                    self.screen.fill(BG_COLOR)
+                    # Render Player Turn
+                    self.render_p_turn()
+                    # Render Community Pot
+                    self.render_overall_pot()
+                    self.render_each_round_pot()
+                    # Render Player's Pot
+                    self.render_p_chips()
+                    # Render Call
+                    post_bet_txt = self.act_font.render("Post Bet(BB)", True, (255, 255, 255))
+                    post_bet_rect = post_bet_txt.get_rect(center=(650, HEIGHT - 50))
+                    self.screen.blit(post_bet_txt, post_bet_rect)
+
+                    # Chk event
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == pygame.K_RETURN:
+                                self.preflop = False
+                                self.flop = True
+
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if post_bet_rect.collidepoint(event.pos):
+                                print("Post Bet(BB) is pressed")
+                                self.system.call(self.system.player_list[self.curr_player_index], 2*self.system.each_pot)
+                    pygame.display.update()
+
     def chk_card(self):
         while self.chk_card_state is True:
             self.screen.fill(BG_COLOR)
@@ -118,6 +172,7 @@ class Game:
                         print("Start Playing")
                         self.game_active = True
                         self.preflop = True
+                        self.first_p_action = True
                         self.run()
             pygame.display.update()        
 

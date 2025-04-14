@@ -16,7 +16,8 @@ class Hand:
         self.dealer = Dealer(self.player_list, self.community_card)
 
         self.display_surface = pygame.display.get_surface()
-        self.pot = 0
+        self.overall_pot = 0
+        self.each_pot = 0
         self.font = pygame.font.Font(GAME_FONT, 120)
 
         self.big_small_blind()
@@ -25,10 +26,23 @@ class Hand:
         self.p1.big_blind = True
         self.p2.small_blind = True
 
+    def post_bet(self, amount):
+        pass
+
     def bet(self, player, amount):
         if player.chips >= amount:
             player.chips -= amount
             player.current_bet += amount
-            self.pot += amount
+            self.each_pot += amount
+            self.overall_pot += amount
+            return True
+        return False
+    def call(self, player, bet_amount):
+        if player.chips >= 2*bet_amount:
+            diff = bet_amount - player.current_bet
+            player.chips -= diff
+            player.current_bet += diff
+            self.each_pot += diff
+            self.overall_pot += diff
             return True
         return False

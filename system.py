@@ -26,9 +26,6 @@ class Hand:
         self.p1.big_blind = True
         self.p2.small_blind = True
 
-    def post_bet(self, amount):
-        pass
-
     def bet(self, player, amount):
         if player.chips >= amount:
             player.chips -= amount

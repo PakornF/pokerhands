@@ -39,6 +39,7 @@ class Dealer:
         for _ in range(3):
             self.comm_card.community_cards.append(self.deck[-1])
             self.deck.pop(-1)
+            self.comm_card.community_cards[-1].position = (WIDTH//3 + 300*_, HEIGHT//3 - 100)
     def deal_turn(self):
         self.comm_card.community_cards.append(self.deck[-1])
         self.deck.pop(-1)

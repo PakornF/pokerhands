@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # Thank you for your great cards! https://zxyonitch.itch.io/pixel-playing-cards-52-cards-card-back?download
-graphics/cards/
+# graphics/cards/
 
 .vscode
 .vscode/launch.json

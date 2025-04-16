@@ -6,3 +6,4 @@ class Player:
         self.current_bet = 0
         self.small_blind = False
         self.big_blind = False
+        self.folded = False

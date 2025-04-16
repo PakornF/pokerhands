@@ -17,6 +17,7 @@ class Game:
         self.game_active = False
         self.get_player_name_state = False
         self.chk_card_state = False
+        self.setup = False
         self.preflop = False
         self.flop = False
         self.turn = False
@@ -59,7 +60,7 @@ class Game:
         pot_rect = pot_txt.get_rect(center=(WIDTH // 2, 100))
         self.screen.blit(pot_txt, pot_rect)
     def render_each_round_pot(self):
-        each_pot_txt = self.act_font.render(f"Pot: {self.system.overall_pot}", True, (255, 255, 255))
+        each_pot_txt = self.act_font.render(f"Pot: {self.system.each_pot}", True, (255, 255, 255))
         each_pot_rect = each_pot_txt.get_rect(center=(WIDTH // 2, 200))
         self.screen.blit(each_pot_txt, each_pot_rect)
     def render_p_chips(self):
@@ -67,6 +68,11 @@ class Game:
             player_pot_txt = self.act_font.render(f"{self.system.player_list[i].name}'s Pot: {self.system.player_list[i].chips}", True, (255, 255, 255))
             player_pot_rect = player_pot_txt.get_rect(center=(WIDTH*(2*i+1)//4, 100))
             self.screen.blit(player_pot_txt, player_pot_rect)
+    def render_p_curr_bet(self):
+        for i in range(len(self.system.player_list)):
+            p_curr_bet_txt = self.act_font.render(f"{self.system.player_list[i].name}'s Current Bet: {self.system.player_list[i].current_bet}", True, (255, 255, 255))
+            p_curr_bet_rect = p_curr_bet_txt.get_rect(center=(WIDTH*(2*i+1)//4, 200))
+            self.screen.blit(p_curr_bet_txt, p_curr_bet_rect)
 
     def run(self):
         # Track SB
@@ -75,7 +81,7 @@ class Game:
                 self.curr_player_index = i
         # Start
         while self.game_active is True:
-            while self.preflop is True and self.first_p_action is True:
+            while self.setup is True and self.first_p_action is True:
                 self.screen.fill(BG_COLOR)
                 # Render Player Turn
                 self.render_p_turn()
@@ -84,6 +90,7 @@ class Game:
                 self.render_each_round_pot()
                 # Render Player's Pot
                 self.render_p_chips()
+                self.render_p_curr_bet()
 
                 # Render Action Button
                 post_bet_txt = self.act_font.render("Post Bet(SB)", True, (255, 255, 255))
@@ -103,10 +110,10 @@ class Game:
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if post_bet_rect.collidepoint(event.pos):
                             print("Post Bet(SB) is pressed")
-                            self.system.bet(self.system.player_list[self.curr_player_index], 100)
+                            self.system.post_bet(self.system.player_list[self.curr_player_index], 50)
                 pygame.display.update()
 
-            while self.preflop is True and self.first_p_action is False:
+            while self.setup is True and self.first_p_action is False:
                 self.screen.fill(BG_COLOR)
                 # Render Player Turn
                 self.render_p_turn()
@@ -115,6 +122,7 @@ class Game:
                 self.render_each_round_pot()
                 # Render Player's Pot
                 self.render_p_chips()
+                self.render_p_curr_bet()
                 # Render Call
                 post_bet_txt = self.act_font.render("Post Bet(BB)", True, (255, 255, 255))
                 post_bet_rect = post_bet_txt.get_rect(center=(650, HEIGHT - 50))
@@ -128,24 +136,81 @@ class Game:
 
                     if event.type == pygame.KEYDOWN:
                         if event.key == pygame.K_RETURN:
-                            self.preflop = False
+                            self.setup = False
                             self.flop = True
+                            self.first_p_action = True
+                            self.curr_player_index += 1
+                            self.system.each_pot = 0
+                            for player in self.system.player_list:
+                                player.current_bet = 0
                             print("End Preflop")
                             self.system.dealer.deal_flop()
                             break
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if post_bet_rect.collidepoint(event.pos):
-                            print("Post Bet(BB) is pressed")
-                            self.system.call(self.system.player_list[self.curr_player_index], 2*self.system.each_pot)
+                            print("Post Call(BB) is pressed")
+                            self.system.post_call(self.system.player_list[self.curr_player_index], 2*self.system.each_pot)
                 pygame.display.update()
-            while self.flop is True:
+            while self.flop is True and self.first_p_action is True:
                 self.screen.fill(BG_COLOR)
                 # Render Game Info
                 self.render_p_turn()
                 self.render_overall_pot()
                 self.render_each_round_pot()
                 self.render_p_chips()
+                self.render_p_curr_bet()
+                # Render Action
+                bet_txt = self.act_font.render("Bet", True, (255, 255, 255))
+                bet_rect = bet_txt.get_rect(center=(650, HEIGHT - 50))
+                self.screen.blit(bet_txt, bet_rect)
+                fold_txt = self.act_font.render("Fold", True, (255, 255, 255))
+                fold_rect = fold_txt.get_rect(center=(1150, HEIGHT - 50))
+                self.screen.blit(fold_txt, fold_rect)
+                all_in_txt = self.act_font.render("All in", True, (255, 255, 255))
+                all_in_rect = all_in_txt.get_rect(center=(1400, HEIGHT - 50))
+                self.screen.blit(all_in_txt, all_in_rect)
                 # Render Card
+                for card in self.system.community_card.community_cards:
+                    self.screen.blit(card.card_surf, card.position)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_RETURN:
+                            self.first_p_action = False
+                            self.curr_player_index = (self.curr_player_index+1) % 2
+                            break
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if bet_rect.collidepoint(event.pos):
+                            self.system.post_bet(self.system.player_list[self.curr_player_index], 50)
+                        elif fold_rect.collidepoint(event.pos):
+                            self.system.fold(self.system.player_list[self.curr_player_index])
+                        elif all_in_rect.collidepoint(event.pos):
+                            self.system.all_in(self.system.player_list[self.curr_player_index])
+                pygame.display.update()
+                break
+            while self.flop is True and self.first_p_action is False:
+                self.screen.fill(BG_COLOR)
+                # Render Game Info
+                self.render_p_turn()
+                self.render_overall_pot()
+                self.render_each_round_pot()
+                self.render_p_chips()
+                self.render_p_curr_bet()
+                # Render Action
+                call_txt = self.act_font.render("Call", True, (255, 255, 255))
+                call_rect = call_txt.get_rect(center=(400, HEIGHT - 50))
+                self.screen.blit(call_txt, call_rect)
+                all_in_txt = self.act_font.render("All in", True, (255, 255, 255))
+                all_in_rect = all_in_txt.get_rect(center=(1400, HEIGHT - 50))
+                self.screen.blit(all_in_txt, all_in_rect)
+                raise_txt = self.act_font.render("Raise", True, (255, 255, 255))
+                raise_rect = raise_txt.get_rect(center=(900, HEIGHT - 50))
+                self.screen.blit(raise_txt, raise_rect)
+                fold_txt = self.act_font.render("Fold", True, (255, 255, 255))
+                fold_rect = fold_txt.get_rect(center=(1150, HEIGHT - 50))
+                self.screen.blit(fold_txt, fold_rect)
                 for card in self.system.community_card.community_cards:
                     self.screen.blit(card.card_surf, card.position)
                 for event in pygame.event.get():
@@ -156,48 +221,15 @@ class Game:
                         if event.key == pygame.K_RETURN:
                             pass
                     if event.type == pygame.MOUSEBUTTONDOWN:
-                        pass
+                        if call_rect.collidepoint(event.pos):
+                            self.system.post_call(self.system.player_list[self.curr_player_index], self.system.each_pot)
+                            print("Call is pressed")
+                        elif fold_rect.collidepoint(event.pos):
+                            self.system.fold(self.system.player_list[self.curr_player_index])
+                        elif raise_rect.collidepoint(event.pos):
+                            self.system.raise_bet(self.system.player_list[self.curr_player_index], self.system.player_list[(self.curr_player_index+1)%2].current_bet)
                 pygame.display.update()
                 break
-            # while self.flop is True:
-            #     self.screen.fill(BG_COLOR)
-            #     print("Flop state")
-            #
-            #     # Render flop cards
-            #     for i, card in enumerate(self.system.dealer.comm_card.community_cards):
-            #         card.position = (WIDTH // 2 - 200 + i * 150, HEIGHT // 2)  # Position flop cards horizontally
-            #         self.screen.blit(card.card_surf, card.position)
-            #
-            #     # Render game info
-            #     self.render_p_turn()
-            #     self.render_overall_pot()
-            #     self.render_each_round_pot()
-            #     self.render_p_chips()
-            #
-            #     # Render action buttons
-            #     self.render_call()
-            #     self.render_bet()
-            #     self.render_raise()
-            #     self.render_fold()
-            #     self.render_allin()
-            #     self.render_check()
-            #
-            #     for event in pygame.event.get():
-            #         if event.type == pygame.QUIT:
-            #             pygame.quit()
-            #             sys.exit()
-            #         if event.type == pygame.KEYDOWN:
-            #             if event.key == pygame.K_RETURN:
-            #                 self.flop = False
-            #                 self.turn = True
-            #                 self.system.dealer.deal_turn()  # Progress to turn
-            #                 break
-            #         if event.type == pygame.MOUSEBUTTONDOWN:
-            #             # Handle flop betting actions here
-            #             pass
-            #
-            #     pygame.display.update()
-            #     break
 
     def chk_card(self):
         while self.chk_card_state is True:
@@ -231,7 +263,7 @@ class Game:
                         self.chk_card_state = False
                         print("Start Playing")
                         self.game_active = True
-                        self.preflop = True
+                        self.setup = True
                         self.first_p_action = True
                         self.run()
             pygame.display.update()        

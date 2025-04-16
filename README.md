@@ -6,7 +6,7 @@ Simple poker game that determines the best hand
 ## Instructions
 
 Pygame and Python3 are required, as well as card images and font in graphics/
-
+Press RETURN after an action(Bet, Call, Raise, Fold, All In, Check) to indicate next player's turn.
 From cmd/PowerShell:
 
 ```sh

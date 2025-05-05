@@ -42,9 +42,14 @@ class Hand:
             self.each_pot += diff
             self.overall_pot += diff
             return True
+        else:
+            player.chips -= player.chips
+            player.current_bet += player.chips
+            self.each_pot += player.chips
+            self.overall_pot += player.chips
         return False
     def raise_bet(self, player, amount):
-        minimum_raise = 1.5 * amount
+        minimum_raise = round(1.5 * amount)
         if player.chips >= minimum_raise:
             player.chips -= minimum_raise
             player.current_bet += minimum_raise

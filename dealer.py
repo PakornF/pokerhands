@@ -43,9 +43,11 @@ class Dealer:
     def deal_turn(self):
         self.comm_card.community_cards.append(self.deck[-1])
         self.deck.pop(-1)
+        self.comm_card.community_cards[-1].position = (WIDTH//3 + 150, HEIGHT//3 + 200)
     def deal_river(self):
         self.comm_card.community_cards.append(self.deck[-1])
         self.deck.pop(-1)
+        self.comm_card.community_cards[-1].position = (WIDTH//3 + 450, HEIGHT//3 + 200)
 ######################################################################
     def evaluate_winner(self):
         def hand_rank(hand):

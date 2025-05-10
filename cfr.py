@@ -1,4 +1,3 @@
-# อัลกอริทึม CFR สำหรับประเมินกลยุทธ์และผู้ชนะ
 import random
 from itertools import combinations
 

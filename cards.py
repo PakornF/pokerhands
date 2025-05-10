@@ -12,10 +12,14 @@ class Card:
         return f"{self.rank}{self.suit}"
 
     def value(self):
-        if self.rank in ['J', 'Q', 'K']:
-            return 10
-        elif self.rank == 'A':
+        if self.rank == 'J':
             return 11
+        elif self.rank == 'Q':
+            return 12
+        elif self.rank == 'K':
+            return 13
+        elif self.rank == 'A':
+            return 14
         return int(self.rank)
 
 class Deck:

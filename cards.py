@@ -1,52 +1,33 @@
-from collections import namedtuple
-from settings import *
-import pygame, random
-
-CardTuple = namedtuple('Card', ['value', 'suit'])
-
-cardvalues = [2, 3, 4, 5, 6, 7, 8, 9, "T", "J", "Q", "K", "A"]
-cardsuits = ['C', 'D', 'H', 'S']
+import random
 
 class Card:
-  def __init__(self, input_value, input_suit):
-    self.animation_start_time = pygame.time.get_ticks()
-    self.animation_complete = False
-    self.uuid = None
-    self.position = None
-    self.start_position = (0, 1080)
-    self.orig_position = self.start_position
-    self.data = CardTuple(value=input_value, suit=input_suit)
-    self.id = f"{self.data.value}{self.data.suit}"
-    self.img = f"graphics/cards/{self.id}.png"
-    self.card_rotation_angle = random.uniform(-3, 3)
-    self.card_img = pygame.image.load(self.img)
-    self.card_img = pygame.transform.scale(self.card_img, (self.card_img.get_width() * 4, self.card_img.get_height() * 4))
-    self.card_rot = pygame.transform.rotate(self.card_img, self.card_rotation_angle)
-    self.card_bounding_rect = self.card_rot.get_bounding_rect()
-    self.card_surf = pygame.Surface(self.card_bounding_rect.size, pygame.SRCALPHA)
-    if self.data.suit == 'C' or self.data.suit == 'S':
-      self.card_back = pygame.image.load(f"graphics/cards/backB.png")
-      self.card_back = pygame.transform.scale(self.card_back, (self.card_back.get_width() * 4, self.card_back.get_height() * 4))
-      self.card_back_rot = pygame.transform.rotate(self.card_back, self.card_rotation_angle)
-      self.card_back_bounding_rect = self.card_back_rot.get_bounding_rect()
-      self.card_back_surf = pygame.Surface(self.card_back_bounding_rect.size, pygame.SRCALPHA)
-    if self.data.suit == 'D' or self.data.suit == 'H':
-      self.card_back = pygame.image.load(f"graphics/cards/backR.png")
-      self.card_back = pygame.transform.scale(self.card_back,(self.card_back.get_width() * 4, self.card_back.get_height() * 4))
-      self.card_back_rot = pygame.transform.rotate(self.card_back, self.card_rotation_angle)
-      self.card_back_bounding_rect = self.card_back_rot.get_bounding_rect()
-      self.card_back_surf = pygame.Surface(self.card_back_bounding_rect.size, pygame.SRCALPHA)
-    
-    # Calculate the position to blit the rotated image onto the surface
-    blit_pos = (0, 0)
-    self.card_surf.blit(self.card_rot, blit_pos)
+    SUITS = ['♠', '♥', '♦', '♣']
+    RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 
-    # Random y value for card
-    self.card_y = (P1_C1[1] - self.card_surf.get_height() // 2) + random.randint(-20, 20)
+    def __init__(self, rank, suit):
+        self.rank = rank
+        self.suit = suit
 
-class Player():
-  def __init__(self):
-    self.cards = []
-class Flop():
-  def __init__(self):
-    self.cards = []
+    def __str__(self):
+        return f"{self.rank}{self.suit}"
+
+    def value(self):
+        if self.rank in ['J', 'Q', 'K']:
+            return 10
+        elif self.rank == 'A':
+            return 11
+        return int(self.rank)
+
+class Deck:
+    def __init__(self):
+        self.cards = [Card(rank, suit) for suit in Card.SUITS for rank in Card.RANKS]
+        random.shuffle(self.cards)
+
+    def draw(self):
+        if self.cards:
+            return self.cards.pop()
+        return None
+
+    def reset(self):
+        self.cards = [Card(rank, suit) for suit in Card.SUITS for rank in Card.RANKS]
+        random.shuffle(self.cards)

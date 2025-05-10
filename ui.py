@@ -123,4 +123,4 @@ class PokerUI:
                     if action == "show_data":
                         print(logger.get_csv())  # Show CSV
                     elif game.state != "showdown":  # Prevent actions in showdown
-                        game.player_action(action, 50 if action != "fold" else 0)
+                        game.player_action(action, 0 if action == "fold" else 50 if action == "call" else 150 if action == "raise" else None)

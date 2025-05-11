@@ -19,7 +19,7 @@ pip install -r requirements.txt
 ## Gameplay Instruction
 - Starting the Game: Type this in the terminal to launch the game window.
   ```sh
-  game.py
+  python game.py
   ```
 - Player Actions: Use the on-screen buttons or keyboard inputs to perform actions.
 - Winning: The game evaluates all hands and declares the winner at the end of each round.

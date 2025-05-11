@@ -50,6 +50,55 @@ class PokerVisualizer:
         plt.title('Win Ratio of Players and Bot')
         self.save_graph('win_ratio.png')
 
+    
+    def _calculate_stats(self):
+        """Calculate duration statistics for each game"""
+        stats = {
+            'Game': self.df['Game'],
+            'Duration': self.df['Duration (s)'],
+            'Min': self.df['Duration (s)'].min(),
+            'Max': self.df['Duration (s)'].max(),
+            'Mean': self.df['Duration (s)'].mean(),
+            'Median': self.df['Duration (s)'].median(),
+            'StDev': self.df['Duration (s)'].std()
+        }
+        return pd.DataFrame(stats)
+    
+    def plot_duration_table(self):
+            """Create and save a table visualization of duration statistics"""
+            stats_df = self._calculate_stats()
+            
+            fig, ax = plt.subplots(figsize=(12, 8))
+            ax.axis('off')
+            ax.axis('tight')
+            
+            # Create the table
+            table = ax.table(
+                cellText=stats_df.values,
+                colLabels=stats_df.columns,
+                loc='center',
+                cellLoc='center'
+            )
+            
+            # Style the table
+            table.auto_set_font_size(False)
+            table.set_fontsize(10)
+            table.scale(1.2, 1.2)
+            
+            # Header styling
+            for (row, col), cell in table.get_celld().items():
+                if row == 0:  # Header row
+                    cell.set_facecolor('#4C72B0')
+                    cell.set_text_props(color='white', weight='bold')
+                elif col == 0:  # First column (Game numbers)
+                    cell.set_facecolor('#DDDDDD')
+                else:  # Data cells
+                    cell.set_facecolor('#F7F7F7')
+            
+            plt.title('Game Duration Statistics', pad=20, weight='bold')
+            plt.tight_layout()
+            self.save_graph('duration_statistics.png')
+
 # visualize = PokerVisualizer('game_data.csv')
 # visualize.plot_game_duration()
 # visualize.plot_player_hands()

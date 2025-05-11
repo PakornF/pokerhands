@@ -31,7 +31,9 @@ class PokerUI:
         self.image_file_name = ['game_duration_distribution.png', 
                                 'player_card_distribution.png', 
                                 'win_ratio.png',
-                                'duration_statistics.png']
+                                'betting_actions_by_round.png',
+                                'correlation.png',
+                                'duration_summary_table.png']
         self.close_button_rect = None
         self.previous_button_rect = None
         self.next_button_rect = None
@@ -201,6 +203,8 @@ class PokerUI:
                             self.visualizer.plot_game_duration()
                             self.visualizer.plot_player_hands()
                             self.visualizer.plot_win_ratio()
-                            self.visualizer.plot_duration_table()
+                            self.visualizer.plot_betting_behavior()
+                            self.visualizer.convert_cards_to_numerical()
+                            self.visualizer.summarize_game_duration_table()
                         elif game.state != "showdown":  # Prevent actions in showdown
                             game.player_action(action, 0 if action == "fold" else 50 if action == "call" else 150 if action == "raise" else None)

@@ -1,7 +1,7 @@
 # PokerHands - Project Description
 **PokerHands** is a Python-based poker game simulation, focusing on evaluating and comparing poker hands among players. The game is built using **Pygame** for graphical rendering and provides a rich set of features, including visual card representation, player decision handling, hand evaluation logic, and optional data analysis via **pandas**, **matplotlib**, and **seaborn**.
 
-The main goal of this project is to simulate poker hand mechanics with accurate evaluation rules and provide an interactive way to understand hand rankings and decision-making processes in Texas Hold'em-style poker.
+The main goal of this project is to simulate poker hand mechanics with accurate evaluation rules and provide an interactive way to understand hand rankings and decision-making processes in Texas Hold 'em-style poker.
 
 ---
 # Project VERSION 1.0
@@ -19,11 +19,11 @@ The system is designed around several core components:
 - **CFR Algorithm (Optional)**: Implements Counterfactual Regret Minimization for AI decision-making and training.
 - **Data Visualization Tools**: Optional statistical analysis using pandas, seaborn, and matplotlib for player behavior or strategy effectiveness.
 
+The architecture supports expansion, such as network play or AI opponents, and is structured for clarity and modularity.
+
 ## UML Class Diagram
 
-![UML Class Diagram Image]()
-
-The architecture supports expansion, such as network play or AI opponents, and is structured for clarity and modularity.
+![UML Class Diagram Image](UML.png)
 
 ---
 
@@ -57,6 +57,18 @@ pip install -r requirements.txt
 - ui.py: Handles the graphical user interface using Pygame.
 - visualize.py: Functions for visualizing game data and statistics.
 - game_data.csv: Dataset after collecting
+
+## License
+MIT License
+
+Copyright (c) 2025 PakornF
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 ## Contact
 Created by PakornF. Feel free to reach out for any questions or collaborations.

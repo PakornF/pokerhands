@@ -15,7 +15,24 @@ cd pokerhands
 ```sh
 pip install -r requirements.txt
 ```
-3. Run Game
-```sh
-game.py
-```
+
+## Gameplay Instruction
+- Starting the Game: Type this in the terminal to launch the game window.
+  ```sh
+  game.py
+  ```
+- Player Actions: Use the on-screen buttons or keyboard inputs to perform actions.
+- Winning: The game evaluates all hands and declares the winner at the end of each round.
+
+## Project Structure
+- cards.py: Contains classes and functions related to card representations.
+- cfr.py: Implements the Counterfactual Regret Minimization(CFR) algorithm for strategy optimization.
+- data.py: Manages data structures and utilities.
+- game.py: Main game loop and event handling.
+- gamelogic.py: Core logic for evaluating poker hands.
+- ui.py: Handles the graphical user interface using Pygame.
+- visualize.py: Functions for visualizing game data and statistics.
+- game_data.csv: Dataset after collecting
+
+## Contact
+Created by PakornF. Feel free to reach out for any questions or collaborations.

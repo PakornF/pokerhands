@@ -13,9 +13,7 @@ class PokerVisualizer:
         self.df = pd.DataFrame(self.file_path)
     
     def save_graph(self, file_name):
-        if not os.path.exists('graphs'):
-            os.makedirs('graphs')
-        plt.savefig(os.path.join('graphs', file_name))
+        plt.savefig(file_name)
 
     def plot_game_duration(self):
         plt.figure(figsize=(10, 6))

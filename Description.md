@@ -24,6 +24,12 @@ pip install -r requirements.txt
 - Player Actions: Use the on-screen buttons or keyboard inputs to perform actions.
 - Winning: The game evaluates all hands and declares the winner at the end of each round.
 
+## Gameplay
+- Player's Action: Use the on-screen buttons or keyboard inputs to perform actions.
+- Progression: After each action, press any buttons to make the Bot actions.
+- Game Flow: There are 5 states, preflop, flop, turn, river, showdown. The game will start with preflop, which allows a player to decide whether to play or fold. If a player decides to play, a flop, which is 3 community cards, will appear, and the player makes a decision again. It will keep running like this, but a turn is and river is just 1 card, not 3. The game ends at showdown state, which will use the 5 best cards of each player, including the community cards, to evaluate the higher card combination.
+- Winner Determination: The winner will be determined by the algorithm called Counterfactual Regret Minimization(CFR), which is an algorithm specialized in evaluating poker hands, etc.
+
 ## Project Structure
 - cards.py: Contains classes and functions related to card representations.
 - cfr.py: Implements the Counterfactual Regret Minimization(CFR) algorithm for strategy optimization.

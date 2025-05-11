@@ -1,20 +1,20 @@
-# pokerhands
-Simple poker game that determines the best hand
+# Poker
+A simple Python-based poker game that determines the best hand among players. This project utilizes Pygame for the graphical interface and implements core poker logic to evaluate hand rankings.
+# Project VERSION 1.0
 
-![Poker Hands Image](images/demo.JPG)
+![Poker Hands Image](screenshots/gameplay/Showdown.png)
 
-## Instructions
-
-Pygame and Python3 are required, as well as card images and font in graphics/
-Press RETURN after an action(Bet, Call, Raise, Fold, All In, Check) to indicate next player's turn.
-From cmd/PowerShell:
-
+## Installation
+1. Clone the Repository:
 ```sh
-python game.py
+git clone https://github.com/PakornF/pokerhands.git
+cd pokerhands
 ```
-
-## Resources:
-Card audio: https://pixabay.com/sound-effects/search/card%20dealing/  
-Card images: https://zxyonitch.itch.io/pixel-playing-cards-52-cards-card-back  
-Hand Ranking algorithm: https://codereview.stackexchange.com/questions/128702/poker-hands-in-python  
-Pixelated Display font: https://www.dafont.com/pixelated-display.font  
+2. Install Required Packages
+```sh
+pip install -r requirements.txt
+```
+3. Run Game
+```sh
+game.py
+```

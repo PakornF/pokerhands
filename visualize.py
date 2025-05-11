@@ -23,7 +23,6 @@ class PokerVisualizer:
         plt.title('Game Duration Distribution')
         plt.xlabel('Duration (s)')
         plt.grid(True)
-        plt.show()
         self.save_graph('game_duration_distribution.png')
     
     def plot_player_hands(self):
@@ -42,7 +41,6 @@ class PokerVisualizer:
         plt.xticks(rotation=45, ha='right')
         plt.legend(title='Player')
         # plt.grid(True)
-        plt.show()
         self.save_graph('player_card_distribution.png')
     
     def plot_win_ratio(self):
@@ -52,10 +50,9 @@ class PokerVisualizer:
         plt.figure(figsize=(10, 6))
         plt.pie(win_pct, labels=['Player1', 'Bot'], autopct='%1.1f%%', startangle=90, colors=['#66c2a5', '#fc8d62'])
         plt.title('Win Ratio of Players and Bot')
-        plt.show()
         self.save_graph('win_ratio.png')
 
-visualize = PokerVisualizer('game_data.csv')
-visualize.plot_game_duration()
-visualize.plot_player_hands()
-visualize.plot_win_ratio()
+# visualize = PokerVisualizer('game_data.csv')
+# visualize.plot_game_duration()
+# visualize.plot_player_hands()
+# visualize.plot_win_ratio()

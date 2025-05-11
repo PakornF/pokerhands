@@ -1,8 +1,10 @@
 import pygame
+from visualize import PokerVisualizer as Visualizer
 
 class PokerUI:
     def __init__(self, screen):
         self.screen = screen
+        self.visualizer = Visualizer('game_data.csv')
         self.font = pygame.font.SysFont("arial", 24)
         self.card_font = pygame.font.SysFont("arial", 30, bold=True)
         self.button_font = pygame.font.SysFont("arial", 20, bold=True)
@@ -122,5 +124,8 @@ class PokerUI:
                 if rect.collidepoint(event.pos):
                     if action == "show_data":
                         print(logger.get_csv())  # Show CSV
+                        self.visualizer.plot_game_duration()
+                        self.visualizer.plot_player_hands()
+                        self.visualizer.plot_win_ratio()
                     elif game.state != "showdown":  # Prevent actions in showdown
                         game.player_action(action, 0 if action == "fold" else 50 if action == "call" else 150 if action == "raise" else None)

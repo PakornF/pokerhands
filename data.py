@@ -15,18 +15,20 @@ class DataLogger:
     def log_game(self, game_data):
         game_data['game'] = len(self.games) + 1
         self.games.append(game_data)
-        # Collect data to CSV
+
+        # Append to CSV file
         with open(self.csv_file, 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            writer.writerow([
+            row = [
                 game_data['game'],
                 f"{game_data['duration']:.2f}",
                 game_data['player0_cards'],
                 game_data['player1_cards'],
                 game_data['winner'],
                 game_data['community_cards'],
-                game_data['bets']
-            ])
+                game_data['bets'],
+            ]
+            writer.writerow(row)
 
     def get_csv(self):
         # Create a CSV string from the logged games

@@ -120,12 +120,13 @@ class PokerUI:
 
             # End game message
             if game.state == "showdown":
-                winner = game.players[0]['chips'] if game.players[0]['chips'] > game.players[1]['chips'] else game.players[1]['chips']
-                winner_text = "You Win!" if winner == game.players[0]['chips'] else "Bot Wins!"
+                if getattr(game, "last_winner", None) is not None:
+                    winner_text = "You Win!" if game.last_winner == 0 else "Bot Wins!"
+                else:
+                    winner_text = "You Win!" if game.players[0]['chips'] >= game.players[1]['chips'] else "Bot Wins!"
                 text = self.font.render(f"{winner_text} Starting New Round...", True, (255, 255, 0))
-                text_rect = text.get_rect(center=(self.screen_width // 2, self.screen_height // 2 + 120))
+                text_rect = text.get_rect(center=(self.screen_width // 2, 50))
                 self.screen.blit(text, text_rect)
-
             # Buttons
             for action, rect in self.button_rects.items():
                 self.draw_button(action, rect, self.button_colors[action])
